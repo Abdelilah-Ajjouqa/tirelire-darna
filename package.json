@@ -1,0 +1,20 @@
+{
+    "name": "daret-darna",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "api-gateway",
+        "backend/*",
+        "frontend"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm:dev:*\"",
+        "dev:gateway": "npm run dev --workspace=api-gateway",
+        "dev:auth": "npm run dev --workspace=backend/auth-service",
+        "dev:darna": "npm run dev --workspace=backend/darna",
+        "dev:tirelire": "npm run dev --workspace=backend/tirelire",
+        "dev:frontend": "npm run dev --workspace=frontend",
+        "build": "npm run build --workspaces",
+        "test": "npm run test --workspaces"
+    }
+}
