@@ -24,6 +24,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use("/api", priceEstimationRoutes);
+app.use("/api/real-estate", RealEstateRoutes)
 
 io.on('connection', (socket) => {
   try {
