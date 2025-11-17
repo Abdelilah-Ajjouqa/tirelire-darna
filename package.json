@@ -3,18 +3,18 @@
     "version": "1.0.0",
     "private": true,
     "workspaces": [
-        "api-gateway",
         "backend/*",
         "frontend"
     ],
     "scripts": {
-        "dev": "concurrently \"npm:dev:*\"",
-        "dev:gateway": "npm run dev --workspace=api-gateway",
-        "dev:auth": "npm run dev --workspace=backend/auth-service",
+        "dev": "concurrently -n darna,tirelire,frontend \"npm:dev:darna\" \"npm:dev:tirelire\" \"npm:dev:frontend\"",
         "dev:darna": "npm run dev --workspace=backend/darna",
         "dev:tirelire": "npm run dev --workspace=backend/tirelire",
         "dev:frontend": "npm run dev --workspace=frontend",
-        "build": "npm run build --workspaces",
-        "test": "npm run test --workspaces"
+        "build": "npm run build --workspaces --if-present",
+        "test": "npm run test --workspaces --if-present"
+    },
+    "devDependencies": {
+        "concurrently": "^9.0.1"
     }
 }

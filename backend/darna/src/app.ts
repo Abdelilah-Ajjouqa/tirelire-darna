@@ -46,6 +46,6 @@ app.get("/", (req, res)=>{
   res.send("the Darna-api is running")
 })
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on http://localhost: ${port}`);
 });
 const context: Record<string, Socket> = {};
