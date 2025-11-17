@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+    container_name: frontend
+    working_dir: /frontend-service
+    command: npm run dev
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./frontend:/frontend-service
+      - /frontend-service/node_modules
+    depends_on:
+      - tirelire
+      - darna
+    restart: unless-stopped
+
+  tirelire:
+    build:
+      context: ./backend/tirelire
+      dockerfile: dockerfile
+    container_name: tirelire
+    working_dir: /tirelire-service
+    command: npm run dev
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./backend/tirelire:/tirelire-service
+      - /tirelire-service/node_modules
+    restart: unless-stopped
+
+  darna:
+    build:
+      context: ./backend/darna
+      dockerfile: dockerfile
+    container_name: darna
+    working_dir: /darna-service
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./backend/darna:/darna-service
+      - /darna-service/node_modules
+    restart: unless-stopped
+
+networks:
+  default:
+    name: app-net
