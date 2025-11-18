@@ -31,9 +31,12 @@ services:
       - "3001:3001"
     environment:
       - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/tirelire
     volumes:
       - ./backend/tirelire:/tirelire-service
       - /tirelire-service/node_modules
+    depends_on:
+      - mongo
     restart: unless-stopped
 
   darna:
@@ -47,10 +50,25 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/darna
     volumes:
       - ./backend/darna:/darna-service
       - /darna-service/node_modules
+    depends_on:
+      - mongo
     restart: unless-stopped
+
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongo-data:
 
 networks:
   default:
