@@ -23,7 +23,7 @@ export const register = createAsyncThunk(
 
             return res.data.data;
         } catch (error: any) {
-            return rejectWithValue(error.message)
+            return rejectWithValue(error.response.message)
         }
     }
 )
@@ -38,7 +38,7 @@ export const login = createAsyncThunk(
 
             return res.data.data;
         } catch (error: any) {
-            return rejectWithValue(error.message)
+            return rejectWithValue(error.response.message)
         }
     }
 )
@@ -51,7 +51,21 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        
+        logout: (state)=>{
+            state.user = null,
+            state.token = null;
+            state.error = null;
+            state.isAuthenticated = false;
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
+        },
+        clearError: (state)=>{
+            state.error = null;
+        },
+        setUser: (state, action: PayloadAction<User>)=>{
+            state.user = action.payload;
+            state.isAuthenticated = true;
+        }
     },
     extraReducers: (builder) => {
         /**
@@ -94,3 +108,5 @@ const authSlice = createSlice({
         })
     }
 })
+
+export default authSlice.reducer;
