@@ -2,13 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { AuthState } from "../types";
 import authService from "../../components/api/authService";
 
-const token = localStorage.getItem('token');
+const isTokenExist = localStorage.getItem('token');
 
 const initialState: AuthState = {
     user: null,
-    token: token ? token : null,
+    token: isTokenExist ? isTokenExist : null,
     refreshToken: null,
-    isAuthenticated: !!token,
+    isAuthenticated: !!isTokenExist,
     loading: false,
     error: null,
 };

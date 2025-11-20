@@ -1,4 +1,5 @@
 import express from "express";
+import cors from 'cors';
 import * as authMiddlewares from "./middlewares/auth.js";
 
 import MongodbConnection from "./config/MongodbConnection.js";
@@ -16,6 +17,9 @@ const dbUri = process.env.MONGO_URI;
 const db = new MongodbConnection(dbUri && dbUri.trim() ? dbUri : undefined);
 db.connect();
 
+app.use(cors({
+    origin: 'http://localhost:5173',
+}))
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/kyc', authMiddlewares.authenticate, kycRoutes);
