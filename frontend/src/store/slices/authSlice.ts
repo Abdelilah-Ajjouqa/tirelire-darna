@@ -15,22 +15,28 @@ const initialState: AuthState = {
 
 export const register = createAsyncThunk(
     'auth/register',
-    async (user: any) => {
+    async (user: any, { rejectWithValue }) => {
         try {
             return await authService.register(user);
         } catch (error: any) {
-            return error.response.message;
+            if (error.response && error.response.data && error.response.data.message) {
+                return rejectWithValue(error.response.data.message);
+            }
+            return rejectWithValue(error.message || "Login failed");
         }
     }
 );
 
 export const login = createAsyncThunk(
     'auth/login',
-    async (user: any) => {
+    async (user: any, { rejectWithValue }) => {
         try {
             return await authService.login(user);
         } catch (error: any) {
-            return error.response.message;
+            if (error.response && error.response.data && error.response.data.message) {
+                return rejectWithValue(error.response.data.message);
+            }
+            return rejectWithValue(error.message || "Login failed");
         }
     }
 );
