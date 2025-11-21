@@ -1,11 +1,16 @@
-import AuthLayout from "./components/auth/AuthLayout"
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Dashboard from "./components/Dashboard";
+import AuthLayout from "./components/auth/AuthLayout";
+import { useAppSelector } from "./store/hooks/hooks";
 
-function App() {
+const App = () => {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
   return (
     <>
-      <AuthLayout/>
+    
     </>
   )
 }
 
-export default App
+export default App;
