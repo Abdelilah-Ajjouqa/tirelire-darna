@@ -25,10 +25,18 @@ const logout = () => {
     localStorage.removeItem('refreshToken');
 };
 
+const checkAuth = async () => {
+    const response = await axios.get(`${API_URL}/me`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+    return response.data;
+}
+
 const authService = {
     register,
     login,
     logout,
+    checkAuth
 };
 
 export default authService;

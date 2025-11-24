@@ -48,6 +48,18 @@ export const logoutUser = createAsyncThunk(
     }
 );
 
+export const checkAuth = createAsyncThunk(
+    'auth/checkAuth',
+    async (_, { rejectWithValue }) => {
+        try {
+            return await authService.checkAuth()
+        } catch (error: any) {
+            localStorage.removeItem('token');
+            return rejectWithValue('Token validation failed')
+        }
+    }
+);
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -97,7 +109,23 @@ const authSlice = createSlice({
                 state.user = null;
                 state.token = null;
                 state.isAuthenticated = false;
-            });
+            })
+
+            //check auth
+            .addCase(checkAuth.fulfilled, (state, action) => {
+                state.loading = false;
+                state.isAuthenticated = true;
+                state.user = action.payload;
+            })
+            .addCase(checkAuth.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(checkAuth.rejected, (state) => {
+                state.loading = false;
+                state.isAuthenticated = false;
+                state.user = null;
+                state.token = null;
+            })
     }
 });
 
