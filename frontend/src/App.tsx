@@ -1,32 +1,22 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from './store/hooks/hooks';
 import AuthLayout from './components/auth/AuthLayout';
 import Dashboard from './components/Dashboard';
-import { useEffect } from 'react';
-import { checkAuth } from './store/slices/authSlice';
+import ProtectedRoute from './components/layout/ProtectedRoute';
+import PublicRoute from './components/layout/PublicRoute';
 
 function App() {
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
-
-  useEffect(()=>{
-    const token = localStorage.getItem('token');
-    if(token){
-      dispatch(checkAuth());
-    }
-  }, [dispatch])
   return (
     <BrowserRouter>
       <Routes>
-        <Route 
-          path="/auth" 
-          element={!isAuthenticated ? <AuthLayout /> : <Navigate to="/" />} 
-        />
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<AuthLayout />} />
+        </Route>
 
-        <Route 
-          path="/" 
-          element={isAuthenticated ? <Dashboard /> : <Navigate to="/auth" />} 
-        />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
   );
