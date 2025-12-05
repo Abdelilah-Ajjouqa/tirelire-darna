@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { AuthState } from "../types";
+import type { AuthState } from "../types/types";
 import authService from "../../components/api/authService";
 
 const isTokenExist = localStorage.getItem('token');
@@ -13,7 +13,7 @@ const initialState: AuthState = {
     error: null,
 };
 
-export const register = createAsyncThunk(
+export const registerUser = createAsyncThunk(
     'auth/register',
     async (user: any, { rejectWithValue }) => {
         try {
@@ -27,7 +27,7 @@ export const register = createAsyncThunk(
     }
 );
 
-export const login = createAsyncThunk(
+export const loginUser = createAsyncThunk(
     'auth/login',
     async (user: any, { rejectWithValue }) => {
         try {
@@ -41,7 +41,7 @@ export const login = createAsyncThunk(
     }
 );
 
-export const logoutUser = createAsyncThunk(
+export const logout = createAsyncThunk(
     'auth/logout',
     async () => {
         authService.logout();
@@ -71,41 +71,41 @@ const authSlice = createSlice({
     extraReducers: (builder) => {
         builder
             // Register
-            .addCase(register.pending, (state) => {
+            .addCase(registerUser.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(register.fulfilled, (state, action) => {
+            .addCase(registerUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isAuthenticated = true;
                 state.user = action.payload.user;
                 state.token = action.payload.token;
             })
-            .addCase(register.rejected, (state, action) => {
+            .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
                 state.isAuthenticated = false;
             })
 
             // Login
-            .addCase(login.pending, (state) => {
+            .addCase(loginUser.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(login.fulfilled, (state, action) => {
+            .addCase(loginUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isAuthenticated = true;
                 state.user = action.payload.user;
                 state.token = action.payload.token;
             })
-            .addCase(login.rejected, (state, action) => {
+            .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
                 state.isAuthenticated = false;
             })
 
             // Logout
-            .addCase(logoutUser.fulfilled, (state) => {
+            .addCase(logout.fulfilled, (state) => {
                 state.user = null;
                 state.token = null;
                 state.isAuthenticated = false;
