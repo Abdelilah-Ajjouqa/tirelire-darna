@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-import { register } from '../../store/slices/authSlice';
+import { registerUser } from '../../store/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
 
-interface RegisterProps {
-    onSwitch: () => void;
-}
 
-const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
+const Register = () => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -16,18 +14,22 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
 
     const { loading, error } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        dispatch(register(formData));
+        const result = await dispatch(registerUser(formData));
+        if (registerUser.fulfilled.match(result)) {
+            navigate('/dashboard');
+        }
     };
 
     return (
-        <div className="w-full">
+        <div className="w-full max-w-md">
             <h2 className="text-2xl font-bold mb-6 text-center text-green-600">Create Account</h2>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -96,14 +98,14 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
             <div className="mt-6 text-center border-t pt-4">
                 <p className="text-sm text-gray-600">Already a member?</p>
                 <button
-                    onClick={onSwitch}
+                    onClick={()=> navigate('/login')}
                     className="text-green-600 font-semibold hover:underline text-sm mt-1"
                 >
                     Sign in here
                 </button>
             </div>
         </div>
-        
+
     );
 };
 

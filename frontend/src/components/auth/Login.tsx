@@ -1,74 +1,52 @@
-import React, { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-import { login } from '../../store/slices/authSlice';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../store/hooks/hooks';
+import { loginUser } from '../../store/slices/authSlice';
 
-interface LoginProps {
-    onSwitch: () => void;
-}
-
-const Login: React.FC<LoginProps> = ({ onSwitch }) => {
+const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const { loading, error } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        dispatch(login({ email, password }));
+        const result = await dispatch(loginUser({ email, password }));
+        if (loginUser.fulfilled.match(result)) {
+            navigate('/dashboard');
+        }
     };
 
     return (
-        <div className="w-full">
-            <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Welcome Back</h2>
-
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                {error && (
-                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 text-sm">
-                        {error}
-                    </div>
-                )}
-
-                <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:bg-gray-400"
-                >
-                    {loading ? 'Signing In...' : 'Login'}
+        <div className="w-full max-w-md">
+            <h2 className="text-2xl font-bold mb-6">Login</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-2 border rounded"
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-2 border rounded"
+                    required
+                />
+                <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                    Login
                 </button>
             </form>
-
-            <div className="mt-6 text-center border-t pt-4">
-                <p className="text-sm text-gray-600">Don't have an account?</p>
-                <button
-                    onClick={onSwitch}
-                    className="text-blue-600 font-semibold hover:underline text-sm mt-1"
-                >
-                    Create an account
+            <p className="mt-4 text-center">
+                Don't have an account?{' '}
+                <button onClick={() => navigate('/register')} className="text-blue-600 hover:underline">
+                    Register
                 </button>
-            </div>
+            </p>
         </div>
     );
 };
